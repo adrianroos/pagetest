@@ -134,7 +134,7 @@
   function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
       document.getElementById('content').innerText = JSON.stringify(data, null, 2);
-      location = "android-app://com.adrianroos.flighttracker/open-sheet/" + data.docs[0].id;
+      location = "android-app://com.adrianroos.flighttimer/open-sheet/" + data.docs[0].id;
     }
   }
 </script>

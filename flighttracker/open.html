@@ -9,12 +9,20 @@
 
 <pre id="content" style="white-space: pre-wrap;"></pre>
 
+<style>
+.picker {
+  height: 100% !important;
+  width: 100% !important;
+  top: 0 !important;
+}
+</style>
+
 <script type="text/javascript">
-  const CLIENT_ID = '1017056404597-b89pigll1tgplda8n45028vevf23me7b.apps.googleusercontent.com';
   const API_KEY = 'AIzaSyAi321f3gvK9xv-twey6qpI6eAOUkMdiY8';
   const APP_ID = '1017056404597';
 
   const accessToken = window.location.hash.substr(1)
+  window.location.hash = ''
 
   /**
    * Callback after api.js is loaded.
@@ -44,7 +52,7 @@
    */
   function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
-      const newLoc = "android-app://com.adrianroos.flighttimer/open-sheet/" + data.docs[0].id;
+      const newLoc = "android-app://com.adrianroos.flighttimer/open-sheet/" + data.docs[0].id + "/";
       document.getElementById('content').innerText = JSON.stringify(data, null, 2) + "\n" + newLoc;
       location = newLoc
     }

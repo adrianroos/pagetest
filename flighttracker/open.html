@@ -7,10 +7,6 @@
 <body>
 <p>Picker API API Quickstart</p>
 
-<!--Add buttons to initiate auth sequence and sign out-->
-<button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-<button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
-
 <pre id="content" style="white-space: pre-wrap;"></pre>
 
 <script type="text/javascript">
@@ -48,8 +44,8 @@
    */
   function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
-      document.getElementById('content').innerText = JSON.stringify(data, null, 2) + "\n" + newLoc;
       const newLoc = "android-app://com.adrianroos.flighttimer/open-sheet/" + data.docs[0].id;
+      document.getElementById('content').innerText = JSON.stringify(data, null, 2) + "\n" + newLoc;
       location = newLoc
     }
     // TODO: handle cancelled

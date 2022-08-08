@@ -134,6 +134,7 @@
   function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
       document.getElementById('content').innerText = JSON.stringify(data, null, 2);
+      location = "com.adrianroos.flighttracker-open:" + data.docs[0].id;
     }
   }
 </script>

@@ -14,101 +14,17 @@
 <pre id="content" style="white-space: pre-wrap;"></pre>
 
 <script type="text/javascript">
-  /* exported gapiLoaded */
-  /* exported gisLoaded */
-  /* exported handleAuthClick */
-  /* exported handleSignoutClick */
-
-  // Authorization scopes required by the API; multiple scopes can be
-  // included, separated by spaces.
-  const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-
   const CLIENT_ID = '1017056404597-b89pigll1tgplda8n45028vevf23me7b.apps.googleusercontent.com';
   const API_KEY = 'AIzaSyAi321f3gvK9xv-twey6qpI6eAOUkMdiY8';
   const APP_ID = '1017056404597';
 
-  let tokenClient;
-  let accessToken = null;
-  let pickerInited = false;
-  let gisInited = false;
-
-
-  document.getElementById('authorize_button').style.visibility = 'hidden';
-  document.getElementById('signout_button').style.visibility = 'hidden';
+  const accessToken = window.location.hash.substr(1)
 
   /**
    * Callback after api.js is loaded.
    */
   function gapiLoaded() {
-    gapi.load('picker', intializePicker);
-  }
-
-  /**
-   * Callback after the API client is loaded. Loads the
-   * discovery doc to initialize the API.
-   */
-  function intializePicker() {
-    pickerInited = true;
-    maybeEnableButtons();
-  }
-
-  /**
-   * Callback after Google Identity Services are loaded.
-   */
-  function gisLoaded() {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: '', // defined later
-    });
-    gisInited = true;
-    maybeEnableButtons();
-  }
-
-  /**
-   * Enables user interaction after all libraries are loaded.
-   */
-  function maybeEnableButtons() {
-    if (pickerInited && gisInited) {
-      document.getElementById('authorize_button').style.visibility = 'visible';
-    }
-  }
-
-  /**
-   *  Sign in the user upon button click.
-   */
-  function handleAuthClick() {
-    tokenClient.callback = async (response) => {
-      if (response.error !== undefined) {
-        throw (response);
-      }
-      accessToken = response.access_token;
-      document.getElementById('signout_button').style.visibility = 'visible';
-      document.getElementById('authorize_button').innerText = 'Refresh';
-      await createPicker();
-    };
-
-    if (accessToken === null) {
-      // Prompt the user to select a Google Account and ask for consent to share their data
-      // when establishing a new session.
-      tokenClient.requestAccessToken({prompt: 'consent'});
-    } else {
-      // Skip display of account chooser and consent dialog for an existing session.
-      tokenClient.requestAccessToken({prompt: ''});
-    }
-  }
-
-  /**
-   *  Sign out the user upon button click.
-   */
-  function handleSignoutClick() {
-    if (accessToken) {
-      accessToken = null;
-      google.accounts.oauth2.revoke(accessToken);
-      document.getElementById('content').innerText = '';
-      document.getElementById('authorize_button').innerText = 'Authorize';
-      document.getElementById('signout_button').style.visibility = 'hidden';
-    }
+    gapi.load('picker', createPicker);
   }
 
   /**
@@ -117,7 +33,6 @@
   function createPicker() {
     const picker = new google.picker.PickerBuilder()
         .enableFeature(google.picker.Feature.NAV_HIDDEN)
-        .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
         .setDeveloperKey(API_KEY)
         .setAppId(APP_ID)
         .setOAuthToken(accessToken)
@@ -136,6 +51,7 @@
       document.getElementById('content').innerText = JSON.stringify(data, null, 2);
       location = "android-app://com.adrianroos.flighttimer/open-sheet/" + data.docs[0].id;
     }
+    // TODO: handle cancelled
   }
 </script>
 <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
